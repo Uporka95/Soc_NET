@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 
@@ -10,6 +11,7 @@ namespace Soc_NET
 {
 	class Program
 	{
+		static Mutex mutex = new Mutex();
 		static void Main(string[] args)
 		{
 
@@ -22,33 +24,51 @@ namespace Soc_NET
 			Socket new_connection = SocListener.Accept();
 			Console.WriteLine("Соединение установлено");
 
+			Thread Out = new Thread(new ParameterizedThreadStart(MessageSending));
+			Thread In = new Thread(new ParameterizedThreadStart(MessageReading));
+
+			Out.Start(new_connection);
+			In.Start(new_connection);
 			while (true)
 			{
-				new_connection
-				while (true)
-				{
 
-				}
 			}
-			string d = "Привет клиент";
-			byte[] buf = Encoding.UTF8.GetBytes(d);
 
-			new_connection.Send(buf);
-			Console.WriteLine("Сообщение передано");
+			
 			new_connection.Close();
-			Task.Run(async () => await new_connection.BeginReceive( });
+			
 			Console.ReadLine();
 
 			
 		}
-		public static async Task WaitForMessageAsync(Socket socket)
+		public static void MessageReading(object socket)
 		{
-			Asyn
-			await Task.Run( () =>
-			while (socket.BeginReceive())
+			Socket soc = socket as Socket;
+			byte[] buffer = new byte[2000];
+			while (true)
 			{
+				soc.Receive(buffer);
+				mutex.WaitOne();
 
-			})
+				Console.WriteLine(Encoding.UTF8.GetString(buffer).Trim('\0'));
+
+
+				mutex.ReleaseMutex();
+			}
+		}
+
+		public static void MessageSending(object socket)
+		{
+			Socket soc = socket as Socket;
+			byte[] buffer;
+			while (true)
+			{
+				string out_message = Console.ReadLine();
+				buffer = Encoding.UTF8.GetBytes(out_message);
+				soc.Send(buffer);
+				mutex.WaitOne();
+				mutex.ReleaseMutex();
+			}
 		}
 	}
 }
