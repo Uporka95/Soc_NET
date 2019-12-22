@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soc_NET", "Soc_NET.csproj", "{58C0D747-95E7-4D40-9D47-980821ECC8C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soc_Client", "..\Soc_Client\Soc_Client.csproj", "{20B8FF41-0456-4AB8-9134-9607CD8D7114}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soc_Client", "Soc_Client\Soc_Client.csproj", "{20B8FF41-0456-4AB8-9134-9607CD8D7114}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
