@@ -87,7 +87,7 @@ namespace Client_Debug
 			{
 					this?.OnBadConnection(this, new ServerEventArgs(e.Message, EventDesc.BadConnection));
 			}
-			this?.OnSend(this, new ServerEventArgs(Message, EventDesc.Sent));
+			//this?.OnSend(this, new ServerEventArgs(Message, EventDesc.Sent));
 		}
 
 		public void StartRecieve()
@@ -107,6 +107,7 @@ namespace Client_Debug
 			catch (SocketException e)
 			{
 				OnBadConnection(this, new ServerEventArgs(e.Message, EventDesc.BadConnection));
+				return;
 			}
 			StartRecieve();
 		}

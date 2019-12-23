@@ -42,6 +42,7 @@ namespace Soc_NET
 		public Client(Socket connection, ClientInfo info)
 		{
 			Connection = connection;
+			Info = info;
 			info.ID = CurrentID++;
 		}
 

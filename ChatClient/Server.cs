@@ -8,27 +8,21 @@ using System.Net.Sockets;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using ClientInformation;
 
 namespace ChatClient
 {
-	enum EventDesc
+	public enum EventDesc
 	{
 		Connection,
 		Sent,
 		Recieved,
 		Disconnection,
 		BadConnection
-		
 	}
 	
-	
-	class ClientInfo
-	{
-		public string Nickname { get; set; }
-		public int ID { get; set; }
-	}
 
-	class ServerEventArgs : EventArgs
+	public class ServerEventArgs : EventArgs
 	{
 		public string EventMessage { get; set; }
 		public EventDesc Desc { get; private set; }
@@ -45,9 +39,10 @@ namespace ChatClient
 		}
 	}
 
-	delegate void ServerEventHandler(object sender, ServerEventArgs args);
-	class Server
+	public delegate void ServerEventHandler(object sender, ServerEventArgs args);
+	public class Server
 	{
+		public ClientInfo clientInfo;
 		IPEndPoint IP;
 		Socket connection { get; set; }
 
@@ -77,6 +72,8 @@ namespace ChatClient
 				this?.OnBadConnection(this, new ServerEventArgs(e.Message, EventDesc.BadConnection));
 			}
 			SendInfo(Nickname);
+			clientInfo = new ClientInfo();
+			clientInfo.Nickname = Nickname;
 			this?.OnConnect(this, new ServerEventArgs("Успешное подключение", EventDesc.Connection));
 			
 
@@ -101,7 +98,7 @@ namespace ChatClient
 			recieving.Start();
 		}
 
-		public void Recieve()
+		private void Recieve()
 		{
 			try
 			{
@@ -112,7 +109,9 @@ namespace ChatClient
 			catch (SocketException e)
 			{
 				OnBadConnection(this, new ServerEventArgs(e.Message, EventDesc.BadConnection));
+				return;
 			}
+			StartRecieve();
 		}
 
 		public void SendInfo(string name)
@@ -122,12 +121,12 @@ namespace ChatClient
 			byte[] buf = new byte[1000];
 
 			BinaryFormatter bf = new BinaryFormatter();
-			using (var stream = new MemoryStream(buf))
-			{
-				bf.Serialize(stream, clientInfo);
-				buf = stream.GetBuffer();
-			}
+			var stream = new MemoryStream(buf,0,1000,true,true);
+			bf.Serialize(stream, clientInfo);
+			buf = stream.GetBuffer();
 
+			stream.Close();
+			stream.Dispose();
 			
 			try
 			{

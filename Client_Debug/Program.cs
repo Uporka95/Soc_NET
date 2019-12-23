@@ -9,7 +9,7 @@ namespace Client_Debug
 			Server xerver = new Server("127.0.0.1", 8000);
 
 			xerver.OnBadConnection += Xerver_OnBadConnection;
-			xerver.OnSend += Xerver_OnSend;
+		//	xerver.OnSend += Xerver_OnSend;
 			xerver.OnRecieve += Xerver_OnRecieve;
 			xerver.OnDisconnect += Xerver_OnDisconnect;
 			xerver.OnConnect += Xerver_OnConnect;
@@ -20,6 +20,7 @@ namespace Client_Debug
 
 			while (true)
 			{
+				Console.Write("Вы: ");
 				xerver.Send(Console.ReadLine());
 			}
 		}
